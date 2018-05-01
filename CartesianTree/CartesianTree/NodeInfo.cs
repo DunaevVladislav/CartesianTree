@@ -6,12 +6,21 @@ namespace CartesianTree
     /// Класс, реализующий хранение информации в дереве и ее обновление
     /// </summary>
     /// <typeparam name="TValue">Информация, которая хранится в узле дерева</typeparam>
-    class NodeInfo<TValue>:IComparable where TValue:IComparable
+    class NodeInfo<TValue> : IComparable where TValue : IComparable
     {
         /// <summary>
         /// Значение узла
         /// </summary>
         public TValue Value { get; set; }
+
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="value">Пользоватльская информация в текущем дереве</param>
+        public NodeInfo(TValue value)
+        {
+            Value = value;
+        }
 
         /// <summary>
         /// Обновление информации в узле, в соответствии с ее левым и правом сыном

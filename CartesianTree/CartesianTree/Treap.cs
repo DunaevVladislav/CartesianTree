@@ -15,10 +15,28 @@ namespace CartesianTree
         /// <summary>
         /// Конструктор
         /// </summary>
+        /// <param name="value">Информация, которая хранится в корне</param>
+        public Treap(TValue value)
+        {
+            Root = new NodeOfCartesianTree<TValue>(value);
+        }
+
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         /// <param name="rootInfo">Информация, которая хранится в корне</param>
-        public Treap(NodeInfo<TValue> rootInfo = null)
+        public Treap(NodeInfo<TValue> rootInfo)
         {
             Root = new NodeOfCartesianTree<TValue>(rootInfo);
+        }
+
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="rootNode">Корень дерева</param>
+        public Treap(NodeOfCartesianTree<TValue> rootNode = null)
+        {
+            Root = rootNode;
         }
 
         /// <summary>

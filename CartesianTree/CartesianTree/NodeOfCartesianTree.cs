@@ -36,6 +36,18 @@ namespace CartesianTree
         /// <summary>
         /// Конструктор
         /// </summary>
+        /// <param name="value">Значение текщуего узла</param>
+        public NodeOfCartesianTree(TValue value)
+        {
+            Info = new NodeInfo<TValue>(value);
+            Priority = random.Next(int.MinValue, int.MaxValue);
+            Left = null;
+            Right = null;
+        }
+
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         /// <param name="info">Информация хранящайся в узле дерева</param>
         /// <param name="left">Левый сын</param>
         /// <param name="right">Правый сын</param>
@@ -62,6 +74,11 @@ namespace CartesianTree
             Right = right;
         }
 
+        public void Update()
+        {
+            Info.Update(Left?.Info, Right?.Info);
+        }
+
         /// <summary>
         /// Операция слияния двух декартовых деревеьев
         /// Ключи правого поддерева не меньше, чем ключи левого поддерева
@@ -77,14 +94,14 @@ namespace CartesianTree
             {
                 var newRight = Merge(left.Right, right);
                 left.Right = newRight;
-                left.Info.Update(left.Left.Info, left.Right.Info);
+                left.Update();
                 return left;
             }
             else
             {
                 var newLeft = Merge(left, right.Left);
                 right.Left = newLeft;
-                right.Info.Update(right.Left.Info, right.Right.Info);
+                right.Update();
                 return right;
             }
         }
@@ -109,7 +126,7 @@ namespace CartesianTree
                     Right.Split(x, out newTree, out right);
                 }
                 left = new NodeOfCartesianTree<TValue>(Info, Priority, Left, newTree);
-                left.Info.Update(left.Left.Info, left.Right.Info);
+                left.Update();
             }
             else
             {
@@ -122,7 +139,7 @@ namespace CartesianTree
                     Left.Split(x, out left, out newTree);
                 }
                 right = new NodeOfCartesianTree<TValue>(Info, Priority, newTree, Right);
-                right.Info.Update(right.Left.Info, right.Right.Info);
+                right.Update();
             }
 
         }
