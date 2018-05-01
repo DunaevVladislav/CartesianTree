@@ -6,7 +6,7 @@ namespace CartesianTree
     /// Класс, реализующий хранение информации в дереве и ее обновление
     /// </summary>
     /// <typeparam name="TValue">Информация, которая хранится в узле дерева</typeparam>
-    abstract class NodeInfo<TValue>:IComparable where TValue:IComparable
+    class NodeInfo<TValue>:IComparable where TValue:IComparable
     {
         /// <summary>
         /// Значение узла
@@ -18,7 +18,7 @@ namespace CartesianTree
         /// </summary>
         /// <param name="left">Левый сын</param>
         /// <param name="right">Правый сын</param>
-        public abstract void Update(NodeInfo<TValue> left, NodeInfo<TValue> right);
+        public void Update(NodeInfo<TValue> left, NodeInfo<TValue> right) { }
 
         /// <summary>
         /// Компаратор
@@ -29,12 +29,56 @@ namespace CartesianTree
         {
             if (obj is NodeInfo<TValue>)
             {
-                return this.CompareTo((obj as NodeInfo<TValue>));
+                return Value.CompareTo((obj as NodeInfo<TValue>).Value);
             }
             else
             {
                 throw new Exception("Compare with the non-admissible class");
             }
+        }
+
+        /// <summary>
+        /// Оператор больше
+        /// </summary>
+        /// <param name="operand1">Первый операнд</param>
+        /// <param name="operand2">Второй операнд</param>
+        /// <returns>Результат сравнения</returns>
+        public static bool operator >(NodeInfo<TValue> operand1, NodeInfo<TValue> operand2)
+        {
+            return operand1.CompareTo(operand2) == 1;
+        }
+
+        /// <summary>
+        /// Оператор меньше
+        /// </summary>
+        /// <param name="operand1">Первый операнд</param>
+        /// <param name="operand2">Второй операнд</param>
+        /// <returns>Результат сравнения</returns>
+        public static bool operator <(NodeInfo<TValue> operand1, NodeInfo<TValue> operand2)
+        {
+            return operand1.CompareTo(operand2) == -1;
+        }
+
+        /// <summary>
+        /// Оператор больше или равно
+        /// </summary>
+        /// <param name="operand1">Первый операнд</param>
+        /// <param name="operand2">Второй операнд</param>
+        /// <returns>Результат сравнения</returns>
+        public static bool operator >=(NodeInfo<TValue> operand1, NodeInfo<TValue> operand2)
+        {
+            return operand1.CompareTo(operand2) >= 0;
+        }
+
+        /// <summary>
+        /// Оператор меньше или равно
+        /// </summary>
+        /// <param name="operand1">Первый операнд</param>
+        /// <param name="operand2">Второй операнд</param>
+        /// <returns>Результат сравнения</returns>
+        public static bool operator <=(NodeInfo<TValue> operand1, NodeInfo<TValue> operand2)
+        {
+            return operand1.CompareTo(operand2) <= 0;
         }
     }
 }
