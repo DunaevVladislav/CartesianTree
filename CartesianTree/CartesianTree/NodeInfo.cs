@@ -23,11 +23,16 @@ namespace CartesianTree
         }
 
         /// <summary>
+        /// Конструктор
+        /// </summary>
+        public NodeInfo() { }
+
+        /// <summary>
         /// Обновление информации в узле, в соответствии с ее левым и правом сыном
         /// </summary>
         /// <param name="left">Левый сын</param>
         /// <param name="right">Правый сын</param>
-        public void Update(NodeInfo<TValue> left, NodeInfo<TValue> right) { }
+        public virtual void Update(NodeInfo<TValue> left, NodeInfo<TValue> right) { }
 
         /// <summary>
         /// Компаратор

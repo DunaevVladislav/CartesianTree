@@ -12,13 +12,16 @@ namespace CartesianTree
 {
     public partial class Form1 : Form
     {
-        Treap<int> treap = new Treap<int>(5);
+        private Treap<NodeWithHeightAndSize, HeightAndSizeInfo> treap = new Treap<NodeWithHeightAndSize, HeightAndSizeInfo>();
         public Form1()
         {
             InitializeComponent();
-            var q = new Treap<int>(8);
-            treap.Merge(q);
-            treap.Split(5, treap, out q);
+            Random rnd = new Random();
+            for(int i= 0; i < 1000; ++i)
+            {
+                treap.Add(new HeightAndSizeInfo(rnd.Next()));
+            }
+            var r = treap.Split(new HeightAndSizeInfo(1000000));
             int asdasd = 0;
         }
     }

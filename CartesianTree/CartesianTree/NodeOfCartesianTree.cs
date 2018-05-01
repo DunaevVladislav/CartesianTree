@@ -6,7 +6,9 @@ namespace CartesianTree
     /// Узел декартового дерева
     /// </summary>
     /// <typeparam name="TValue">Информация хранимая в декартовом дереве</typeparam>
-    class NodeOfCartesianTree<TValue> where TValue:IComparable
+    class NodeOfCartesianTree<TNode, TValue>
+        where TValue : IComparable
+        where TNode : NodeInfo<TValue>, new()
     {
         /// <summary>
         /// Объект для генерации случайных величин
@@ -16,7 +18,7 @@ namespace CartesianTree
         /// <summary>
         /// Информация хранящайся в узле дерева
         /// </summary>
-        public NodeInfo<TValue> Info { get; set; }
+        public TNode Info { get; set; }
 
         /// <summary>
         /// Приоритет узла
@@ -26,12 +28,12 @@ namespace CartesianTree
         /// <summary>
         /// Левый сын дерева
         /// </summary>
-        public NodeOfCartesianTree<TValue> Left { get; set; }
+        public NodeOfCartesianTree<TNode, TValue> Left { get; set; }
 
         /// <summary>
         /// Правый сын дерева
         /// </summary>
-        public NodeOfCartesianTree<TValue> Right { get; set; }
+        public NodeOfCartesianTree<TNode, TValue> Right { get; set; }
 
         /// <summary>
         /// Конструктор
@@ -39,7 +41,10 @@ namespace CartesianTree
         /// <param name="value">Значение текщуего узла</param>
         public NodeOfCartesianTree(TValue value)
         {
-            Info = new NodeInfo<TValue>(value);
+            Info = new TNode
+            {
+                Value = value
+            };
             Priority = random.Next(int.MinValue, int.MaxValue);
             Left = null;
             Right = null;
@@ -51,7 +56,7 @@ namespace CartesianTree
         /// <param name="info">Информация хранящайся в узле дерева</param>
         /// <param name="left">Левый сын</param>
         /// <param name="right">Правый сын</param>
-        public NodeOfCartesianTree(NodeInfo<TValue> info = null, NodeOfCartesianTree<TValue> left = null, NodeOfCartesianTree<TValue> right = null)
+        public NodeOfCartesianTree(TNode info = null, NodeOfCartesianTree<TNode, TValue> left = null, NodeOfCartesianTree<TNode, TValue> right = null)
         {
             Info = info;
             Priority = random.Next(int.MinValue, int.MaxValue);
@@ -66,7 +71,7 @@ namespace CartesianTree
         /// <param name="prioryty">Приоритет вершины</param>
         /// <param name="left">Левый сын</param>
         /// <param name="right">Правый сын</param>
-        public NodeOfCartesianTree(NodeInfo<TValue> info, int prioryty, NodeOfCartesianTree<TValue> left, NodeOfCartesianTree<TValue> right)
+        public NodeOfCartesianTree(TNode info, int prioryty, NodeOfCartesianTree<TNode, TValue> left = null, NodeOfCartesianTree<TNode, TValue> right = null)
         {
             Info = info;
             Priority = prioryty;
@@ -86,7 +91,7 @@ namespace CartesianTree
         /// <param name="left">Левое поддерево</param>
         /// <param name="right">Правое поддерево</param>
         /// <returns>Результирующее дерево</returns>
-        public static NodeOfCartesianTree<TValue> Merge(NodeOfCartesianTree<TValue> left, NodeOfCartesianTree<TValue> right)
+        public static NodeOfCartesianTree<TNode, TValue> Merge(NodeOfCartesianTree<TNode, TValue> left, NodeOfCartesianTree<TNode, TValue> right)
         {
             if (left == null) return right;
             if (right == null) return left;
@@ -112,9 +117,9 @@ namespace CartesianTree
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <param name="left">Получивщееся левое поддереов</param>
         /// <param name="right">Получившееся правое поддерево</param>
-        public void Split(TValue x, out NodeOfCartesianTree<TValue> left, out NodeOfCartesianTree<TValue> right) 
+        public void Split(TValue x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right)
         {
-            NodeOfCartesianTree<TValue> newTree = null;
+            NodeOfCartesianTree<TNode, TValue> newTree = null;
             if (Info.Value.CompareTo(x) <= 0)
             {
                 if (Right == null)
@@ -125,7 +130,7 @@ namespace CartesianTree
                 {
                     Right.Split(x, out newTree, out right);
                 }
-                left = new NodeOfCartesianTree<TValue>(Info, Priority, Left, newTree);
+                left = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, Left, newTree);
                 left.Update();
             }
             else
@@ -138,10 +143,46 @@ namespace CartesianTree
                 {
                     Left.Split(x, out left, out newTree);
                 }
-                right = new NodeOfCartesianTree<TValue>(Info, Priority, newTree, Right);
+                right = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, newTree, Right);
                 right.Update();
             }
+        }
 
+        /// <summary>
+        /// Разделяет текущее дерево по ключу x (в левом дереве все что меньше x, в правом остальные)
+        /// </summary>
+        /// <param name="x">Ключ, по которому происходит разделение</param>
+        /// <param name="left">Получивщееся левое поддереов</param>
+        /// <param name="right">Получившееся правое поддерево</param>
+        public void SplitLeft(TValue x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right)
+        {
+            NodeOfCartesianTree<TNode, TValue> newTree = null;
+            if (Info.Value.CompareTo(x) < 0)
+            {
+                if (Right == null)
+                {
+                    right = null;
+                }
+                else
+                {
+                    Right.SplitLeft(x, out newTree, out right);
+                }
+                left = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, Left, newTree);
+                left.Update();
+            }
+            else
+            {
+                if (Left == null)
+                {
+                    left = null;
+                }
+                else
+                {
+                    Left.SplitLeft(x, out left, out newTree);
+                }
+                right = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, newTree, Right);
+                right.Update();
+            }
         }
     }
 }
