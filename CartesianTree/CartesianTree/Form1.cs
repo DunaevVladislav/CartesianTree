@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,29 +17,24 @@ namespace CartesianTree
         public Form1()
         {
             InitializeComponent();
+            NodeOfCartesianTree<NodeWithHeightAndSize, HeightAndSizeInfo>.MinPriority = 0;
+            NodeOfCartesianTree<NodeWithHeightAndSize, HeightAndSizeInfo>.MaxPriority = 1000;
             Random rnd = new Random();
             do
             {
                 treap = new Treap<NodeWithHeightAndSize, HeightAndSizeInfo>();
-                for (int i = 0; i < 31; ++i)
+                for (int i = 0; i < 25; ++i)
                 {
-                    treap.Add(new HeightAndSizeInfo(rnd.Next(10000)));
+                    treap.Add(new HeightAndSizeInfo(rnd.Next(100)));
                 }
-            } while (treap.Root.Info.Value.Height > 6);
+            } while (treap.Root.Info.Value.Height > 5);
 
-            int asdasd = 0;
-            var qweq = new NodeDrawer()
-            {
-                Size = 92;
-            }
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            Graphics graphics = panel1.CreateGraphics();
-            Pen pen = new Pen(Color.Black, 2);
-            graphics.DrawRectangle(pen, 100, 100, 60, 60);
-            graphics.DrawString("Значение: 45\nПриоритет:12", new Font("Microsoft Sans Serif", 10), pen.Brush, 100, 100);
+            TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo> drawer = new TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo>(treap, panel1.CreateGraphics(), panel1.Size.Width);
+            drawer.Draw();
         }
     }
 }

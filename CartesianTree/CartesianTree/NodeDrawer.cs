@@ -7,10 +7,6 @@ namespace CartesianTree
     /// </summary>
     class NodeDrawer
     {
-        /// <summary>
-        /// Расстояние между уровнями в дереве
-        /// </summary>
-        public int DistanseHeight { get; set; } = 45;
 
         /// <summary>
         /// Высота на которой будет рисоваться узел
@@ -33,24 +29,23 @@ namespace CartesianTree
         public int EndX { get; set; } = 1000;
 
         /// <summary>
-        /// Цвет границ узлов
+        /// Текст, который отображается внутри узла
         /// </summary>
-        public Pen PenBorder { get; set; } = new Pen(Color.Black, 2);
-
-        /// <summary>
-        /// Шрифт для отображения информации внутри узла
-        /// </summary>
-        public Font Font { get; set; } = new Font("Calibri", 11);
-
-        /// <summary>
-        /// Цвет шрифта
-        /// </summary>
-        public Brush BrushFont { get; set; } = new SolidBrush(Color.Red);
+        public string Text { get; set; }
 
         /// <summary>
         /// Конструктор
         /// </summary>
         public NodeDrawer() { }
+
+        /// <summary>
+        /// Возвращает Rectangle, который предстваляет узел дерева
+        /// </summary>
+        /// <returns>Rectangle, который предстваляет узел дерева</returns>
+        public Rectangle GetRectangle()
+        {
+            return new Rectangle((EndX + StartX - Size) / 2, StartY, Size, Size);
+        }
 
     }
 }

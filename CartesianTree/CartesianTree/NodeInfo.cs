@@ -94,5 +94,14 @@ namespace CartesianTree
         {
             return operand1.CompareTo(operand2) <= 0;
         }
+
+        /// <summary>
+        /// Возвращает строку, представляющую текущий объект 
+        /// </summary>
+        /// <returns>Строку, представляющую текущий объект </returns>
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

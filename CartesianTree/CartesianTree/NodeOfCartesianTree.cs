@@ -26,6 +26,16 @@ namespace CartesianTree
         public int Priority { get; private set; }
 
         /// <summary>
+        /// Минимальный приоритет узла
+        /// </summary>
+        public static int MinPriority { get; set; } = int.MinValue;
+
+        /// <summary>
+        /// Максимальный приоритет узла
+        /// </summary>
+        public static int MaxPriority { get; set; } = int.MaxValue;
+
+        /// <summary>
         /// Левый сын дерева
         /// </summary>
         public NodeOfCartesianTree<TNode, TValue> Left { get; set; }
@@ -45,7 +55,7 @@ namespace CartesianTree
             {
                 Value = value
             };
-            Priority = random.Next(int.MinValue, int.MaxValue);
+            Priority = random.Next(MinPriority, MaxPriority);
             Left = null;
             Right = null;
         }
@@ -183,6 +193,15 @@ namespace CartesianTree
                 right = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, newTree, Right);
                 right.Update();
             }
+        }
+
+        /// <summary>
+        /// Возвращает строку, представляющую текущий объект 
+        /// </summary>
+        /// <returns>Строку, представляющую текущий объект </returns>
+        public override string ToString()
+        {
+            return Info.ToString() + "\n" + Priority.ToString();
         }
     }
 }

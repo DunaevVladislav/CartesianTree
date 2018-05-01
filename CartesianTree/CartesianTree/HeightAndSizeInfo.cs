@@ -45,5 +45,14 @@ namespace CartesianTree
                 return Value.CompareTo((obj as HeightAndSizeInfo).Value);
             else throw new Exception("Not valid type of class");
         }
+
+        /// <summary>
+        /// Возвращает строку, представляющую текущий объект 
+        /// </summary>
+        /// <returns>Строку, представляющую текущий объект </returns>
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }
