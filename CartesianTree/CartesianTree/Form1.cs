@@ -25,16 +25,17 @@ namespace CartesianTree
             {
                 num++;
                 treap = new Treap<NodeWithHeightAndSize, HeightAndSizeInfo>();
-                for (int i = 0; i < 22; ++i)
+                for (int i = 0; i < 25; ++i)
                 {
                     treap.Add(new HeightAndSizeInfo(rnd.Next(1000)));
                 }
-            } while (treap.Root.Info.Value.Height > 5);
+            } while (treap.Root.Info.Value.Height > 6);
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo> drawer = new TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo>(treap, panel1.CreateGraphics(), panel1.Size.Width);
+            TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo> drawer =
+                new TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo>(treap, panel1.CreateGraphics(), panel1.Size.Width, panel1.Size.Height);
             drawer.Draw();
         }
     }

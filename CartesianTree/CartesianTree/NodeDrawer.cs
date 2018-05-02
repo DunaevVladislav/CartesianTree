@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace CartesianTree
 {
@@ -16,7 +17,19 @@ namespace CartesianTree
         /// <summary>
         /// Размер узла дерева
         /// </summary>
-        public int Size { get; set; } = 60;
+        private int size = 60;
+
+        /// <summary>
+        /// Размер узла дерева
+        /// </summary>
+        public int Size
+        {
+            get => size;
+            set
+            {
+                size = Math.Min(value, EndX - StartX - 2);
+            }
+        }
 
         /// <summary>
         /// Начало области, в которой можно отображать узел (по ширине)

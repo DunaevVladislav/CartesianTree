@@ -45,7 +45,7 @@ namespace CartesianTree
         /// <summary>
         /// Расстояние между уровнями в дереве
         /// </summary>
-        public int DistanseHeight { get; set; } = 80;
+        public int DistanseHeight { get; set; } = 50;
 
         /// <summary>
         /// Размер узла дерева
@@ -78,6 +78,11 @@ namespace CartesianTree
         public int MaxWidth { get; set; }
 
         /// <summary>
+        /// Максимальная высота области для рисования
+        /// </summary>
+        public int MaxHeight { get; set; }
+
+        /// <summary>
         /// Отступ сверху
         /// </summary>
         public int Backslash { get; set; } = 15;
@@ -86,11 +91,12 @@ namespace CartesianTree
         /// Конструктор
         /// </summary>
         /// <param name="treap">Декартовое дерево, которое надо нарисовать</param>
-        public TreapDrawer(Treap<TNode, TValue> treap, Graphics graphics, int maxWidth)
+        public TreapDrawer(Treap<TNode, TValue> treap, Graphics graphics, int maxWidth, int maxHeight)
         {
             Treap = treap;
             Graphics = graphics;
             MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
             AddedAllNodes();
         }
 
@@ -110,21 +116,23 @@ namespace CartesianTree
                 if (Nodes[i].Left != null)
                 {
                     Nodes.Add(Nodes[i].Left);
-                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Left, NodeDrawers[i].StartY + Size + DistanseHeight, NodeDrawers[i].StartX, mid, Size));
+                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Left, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight, NodeDrawers[i].StartX, mid, Size));
                     ArrowDrawers.Add(
-                        new ArrowDrawer(mid, NodeDrawers[i].StartY + Size + 2, (NodeDrawers[i].StartX + mid) / 2, NodeDrawers[i].StartY + Size + DistanseHeight - 2)
-                    {
-                        Pen = PenArrow,
-                    });
+                        new ArrowDrawer(mid, NodeDrawers[i].StartY + NodeDrawers[i].Size + 2, (NodeDrawers[i].StartX + mid) / 2, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight - 2)
+                        {
+                            Pen = PenArrow,
+                            LengthPointer = NodeDrawers[i].Size / 3,
+                        });
                 }
                 if (Nodes[i].Right != null)
                 {
                     Nodes.Add(Nodes[i].Right);
-                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Right, NodeDrawers[i].StartY + Size + DistanseHeight, mid + 1, NodeDrawers[i].EndX, Size));
+                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Right, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight, mid + 1, NodeDrawers[i].EndX, Size));
                     ArrowDrawers.Add(
-                        new ArrowDrawer(mid, NodeDrawers[i].StartY + Size + 2, (NodeDrawers[i].EndX + mid) / 2, NodeDrawers[i].StartY + Size + DistanseHeight - 2)
+                        new ArrowDrawer(mid, NodeDrawers[i].StartY + NodeDrawers[i].Size + 2, (NodeDrawers[i].EndX + mid) / 2, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight - 2)
                         {
                             Pen = PenArrow,
+                            LengthPointer = NodeDrawers[i].Size /3,
                         });
                 }
             }
@@ -138,11 +146,16 @@ namespace CartesianTree
             Graphics.Clear(Color.White);
             foreach (NodeDrawer node in NodeDrawers)
             {
+                if (node.StartY + node.Size > MaxHeight) continue;
                 Graphics.DrawRectangle(PenBorder, node.GetRectangle());
-                Graphics.DrawString(node.Text, Font, BrushFont, (node.StartX + node.EndX - Size) / 2, node.StartY);
+                if (node.Size == Size)
+                {
+                    Graphics.DrawString(node.Text, Font, BrushFont, (node.StartX + node.EndX - Size) / 2, node.StartY);
+                }
             }
             foreach (ArrowDrawer arrow in ArrowDrawers)
             {
+                if (arrow.End.Y > MaxHeight) continue;
                 arrow.Draw(Graphics);
             }
         }
