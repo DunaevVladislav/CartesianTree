@@ -55,7 +55,7 @@ namespace CartesianTree
             {
                 Value = value
             };
-            Priority = random.Next(MinPriority, MaxPriority);
+            Priority = random.Next()%(MaxPriority - MinPriority + 1) + MinPriority;
             Left = null;
             Right = null;
         }
@@ -127,7 +127,7 @@ namespace CartesianTree
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <param name="left">Получивщееся левое поддереов</param>
         /// <param name="right">Получившееся правое поддерево</param>
-        public void Split(TValue x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right)
+        public void Split<T>(T x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right)
         {
             NodeOfCartesianTree<TNode, TValue> newTree = null;
             if (Info.Value.CompareTo(x) <= 0)
@@ -164,7 +164,7 @@ namespace CartesianTree
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <param name="left">Получивщееся левое поддереов</param>
         /// <param name="right">Получившееся правое поддерево</param>
-        public void SplitLeft(TValue x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right)
+        public void SplitLeft<T>(T x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right)
         {
             NodeOfCartesianTree<TNode, TValue> newTree = null;
             if (Info.Value.CompareTo(x) < 0)

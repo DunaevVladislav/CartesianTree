@@ -42,8 +42,10 @@ namespace CartesianTree
         public int CompareTo(object obj)
         {
             if (obj is HeightAndSizeInfo)
+            {
                 return Value.CompareTo((obj as HeightAndSizeInfo).Value);
-            else throw new Exception("Not valid type of class");
+            }
+            return Value.CompareTo(obj);
         }
 
         /// <summary>

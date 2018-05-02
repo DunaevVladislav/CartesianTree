@@ -45,10 +45,7 @@ namespace CartesianTree
             {
                 return Value.CompareTo((obj as NodeInfo<TValue>).Value);
             }
-            else
-            {
-                throw new Exception("Compare with the non-admissible class");
-            }
+            return Value.CompareTo(obj);
         }
 
         /// <summary>

@@ -59,7 +59,7 @@ namespace CartesianTree
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <param name="left">Левое поддерево</param>
         /// <param name="right">Правое поддерево</param>
-        public void Split(TValue x, out Treap<TNode, TValue> left, out Treap<TNode, TValue> right)
+        public void Split<T>(T x, out Treap<TNode, TValue> left, out Treap<TNode, TValue> right)
         {
             NodeOfCartesianTree<TNode, TValue> l, r;
             Root.Split(x, out l, out r);
@@ -75,7 +75,7 @@ namespace CartesianTree
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <param name="left">Левое поддерево</param>
         /// <param name="right">Правое поддерево</param>
-        public void SplitLeft(TValue x, out Treap<TNode, TValue> left, out Treap<TNode, TValue> right)
+        public void SplitLeft<T>(T x, out Treap<TNode, TValue> left, out Treap<TNode, TValue> right)
         {
             NodeOfCartesianTree<TNode, TValue> l, r;
             Root.SplitLeft(x, out l, out r);
@@ -90,7 +90,7 @@ namespace CartesianTree
         /// </summary>
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <returns>Поддерево, в котором ключи больше x</returns>
-        public Treap<TNode, TValue> Split(TValue x)
+        public Treap<TNode, TValue> Split<T>(T x)
         {
             NodeOfCartesianTree<TNode, TValue> l = null, r = null;
             Root?.Split(x, out l, out r);
@@ -105,7 +105,7 @@ namespace CartesianTree
         /// </summary>
         /// <param name="x">Ключ, по которому происходит разделение</param>
         /// <returns>Поддерево, в котором ключи больше x</returns>
-        public Treap<TNode, TValue> SplitLeft(TValue x)
+        public Treap<TNode, TValue> SplitLeft<T>(T x)
         {
             NodeOfCartesianTree<TNode, TValue> l, r;
             Root.SplitLeft(x, out l, out r);
@@ -129,7 +129,7 @@ namespace CartesianTree
         /// </summary>
         /// <param name="x">Удаляемыей элемент</param>
         /// <returns>Был ли удален элемент</returns>
-        public bool Delete(TValue x)
+        public bool Delete<T>(T x)
         {
             var r = Split(x);
             var deletedTree = SplitLeft(x);
