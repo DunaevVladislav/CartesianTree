@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CartesianTree
 {
@@ -29,6 +26,12 @@ namespace CartesianTree
         /// </summary>
         public List<NodeDrawer> NodeDrawers { get; private set; } = new List<NodeDrawer>();
 
+
+        /// <summary>
+        /// Список всех ребер дерева(для отрисовки)
+        /// </summary>
+        public List<ArrowDrawer> ArrowDrawers { get; private set; } = new List<ArrowDrawer>();
+
         /// <summary>
         /// Список всех узлов дерева
         /// </summary>
@@ -42,7 +45,7 @@ namespace CartesianTree
         /// <summary>
         /// Расстояние между уровнями в дереве
         /// </summary>
-        public int DistanseHeight { get; set; } = 45;
+        public int DistanseHeight { get; set; } = 80;
 
         /// <summary>
         /// Размер узла дерева
@@ -53,6 +56,11 @@ namespace CartesianTree
         /// Цвет границ узлов
         /// </summary>
         public Pen PenBorder { get; set; } = new Pen(Color.Black, 2);
+
+        /// <summary>
+        /// Цвет стрелок
+        /// </summary>
+        public Pen PenArrow { get; set; } = new Pen(Color.Blue, 1.5f);
 
         /// <summary>
         /// Шрифт для отображения информации внутри узла
@@ -103,11 +111,21 @@ namespace CartesianTree
                 {
                     Nodes.Add(Nodes[i].Left);
                     NodeDrawers.Add(GetNodeDrawer(Nodes[i].Left, NodeDrawers[i].StartY + Size + DistanseHeight, NodeDrawers[i].StartX, mid, Size));
+                    ArrowDrawers.Add(
+                        new ArrowDrawer(mid, NodeDrawers[i].StartY + Size + 2, (NodeDrawers[i].StartX + mid) / 2, NodeDrawers[i].StartY + Size + DistanseHeight - 2)
+                    {
+                        Pen = PenArrow,
+                    });
                 }
                 if (Nodes[i].Right != null)
                 {
                     Nodes.Add(Nodes[i].Right);
                     NodeDrawers.Add(GetNodeDrawer(Nodes[i].Right, NodeDrawers[i].StartY + Size + DistanseHeight, mid + 1, NodeDrawers[i].EndX, Size));
+                    ArrowDrawers.Add(
+                        new ArrowDrawer(mid, NodeDrawers[i].StartY + Size + 2, (NodeDrawers[i].EndX + mid) / 2, NodeDrawers[i].StartY + Size + DistanseHeight - 2)
+                        {
+                            Pen = PenArrow,
+                        });
                 }
             }
         }
@@ -118,10 +136,14 @@ namespace CartesianTree
         public void Draw()
         {
             Graphics.Clear(Color.White);
-            foreach(NodeDrawer node in NodeDrawers)
+            foreach (NodeDrawer node in NodeDrawers)
             {
                 Graphics.DrawRectangle(PenBorder, node.GetRectangle());
-                Graphics.DrawString(node.Text, Font, BrushFont, (node.StartX + node.EndX - Size)/2, node.StartY);
+                Graphics.DrawString(node.Text, Font, BrushFont, (node.StartX + node.EndX - Size) / 2, node.StartY);
+            }
+            foreach (ArrowDrawer arrow in ArrowDrawers)
+            {
+                arrow.Draw(Graphics);
             }
         }
 

@@ -18,16 +18,16 @@ namespace CartesianTree
         {
             InitializeComponent();
             NodeOfCartesianTree<NodeWithHeightAndSize, HeightAndSizeInfo>.MinPriority = 0;
-            NodeOfCartesianTree<NodeWithHeightAndSize, HeightAndSizeInfo>.MaxPriority = 10007;
+            NodeOfCartesianTree<NodeWithHeightAndSize, HeightAndSizeInfo>.MaxPriority = 10009;
             Random rnd = new Random();
             int num = 0;
             do
             {
                 num++;
                 treap = new Treap<NodeWithHeightAndSize, HeightAndSizeInfo>();
-                for (int i = 0; i < 15; ++i)
+                for (int i = 0; i < 22; ++i)
                 {
-                    treap.Add(new HeightAndSizeInfo(rnd.Next(100)));
+                    treap.Add(new HeightAndSizeInfo(rnd.Next(1000)));
                 }
             } while (treap.Root.Info.Value.Height > 5);
         }
