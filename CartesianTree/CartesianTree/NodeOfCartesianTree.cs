@@ -6,7 +6,7 @@ namespace CartesianTree
     /// Узел декартового дерева
     /// </summary>
     /// <typeparam name="TValue">Информация хранимая в декартовом дереве</typeparam>
-    class NodeOfCartesianTree<TNode, TValue>
+    class NodeOfCartesianTree<TNode, TValue>:IDetailsToString
         where TValue : IComparable
         where TNode : NodeInfo<TValue>, new()
     {
@@ -198,10 +198,12 @@ namespace CartesianTree
         /// <summary>
         /// Возвращает строку, представляющую текущий объект 
         /// </summary>
+        /// <param name="details">Нужна ли подробная информация</param>
         /// <returns>Строку, представляющую текущий объект </returns>
-        public override string ToString()
+        public string ToString(bool details = false)
         {
-            return Info.ToString() + "\n" + Priority.ToString();
+            
+            return Info.ToString(details) + "\n" + (details?"Приоритет узла: ":"") + Priority.ToString();
         }
     }
 }

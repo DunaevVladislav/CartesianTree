@@ -6,7 +6,7 @@ namespace CartesianTree
     /// Информация для хранения в декартовом дереве
     /// Хранит число, размер и высоту поддерева
     /// </summary>
-    class HeightAndSizeInfo:IComparable
+    class HeightAndSizeInfo:IComparable, IDetailsToString
     {
         /// <summary>
         /// Значение
@@ -51,9 +51,16 @@ namespace CartesianTree
         /// <summary>
         /// Возвращает строку, представляющую текущий объект 
         /// </summary>
+        /// <param name="details">Нужна ли подробная информация</param>
         /// <returns>Строку, представляющую текущий объект </returns>
-        public override string ToString()
+        public string ToString(bool details = false)
         {
+            if (details)
+            {
+                return  "Число: " + Value.ToString() + "\n" +
+                     "Размер поддерева: " + Size.ToString() + "\n" +
+                     "Высота поддерева: " + Height.ToString() + "\n";
+            }
             return Value.ToString();
         }
     }

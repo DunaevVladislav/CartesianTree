@@ -8,7 +8,7 @@ namespace CartesianTree
     /// Класс для рисования декартового дерева
     /// </summary>
     class TreapDrawer<TNode, TValue>
-        where TValue : IComparable
+        where TValue : IComparable,IDetailsToString
         where TNode : NodeInfo<TValue>, new()
     {
         /// <summary>
@@ -179,6 +179,24 @@ namespace CartesianTree
                 Size = size,
             };
             return nodeDrawer;
+        }
+
+        /// <summary>
+        /// Возвращает подробную информацию об узел, которому принадлежит точка point
+        /// Если такой найдется
+        /// </summary>
+        /// <param name="point">Точка, по которой ищется узел</param>
+        /// <returns>Подробную информацию об узле(если такой найдется)</returns>
+        public string GetDetailInfo(Point point)
+        {
+            for(int i = 0; i < NodeDrawers.Count; ++i)
+            {
+                if (NodeDrawers[i].Inside(point))
+                {
+                    return Nodes[i].ToString(true);
+                }
+            }
+            return "";
         }
 
 

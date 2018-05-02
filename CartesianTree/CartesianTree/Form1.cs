@@ -14,6 +14,9 @@ namespace CartesianTree
     public partial class Form1 : Form
     {
         private Treap<NodeWithHeightAndSize, HeightAndSizeInfo> treap = new Treap<NodeWithHeightAndSize, HeightAndSizeInfo>();
+
+        private TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo> drawer = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -29,14 +32,18 @@ namespace CartesianTree
                 {
                     treap.Add(new HeightAndSizeInfo(rnd.Next(1000)));
                 }
-            } while (treap.Root.Info.Value.Height > 6);
+            } while (treap.Root.Info.Value.Height > 7);
+            drawer = new TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo>(treap, panel1.CreateGraphics(), panel1.Size.Width, panel1.Size.Height);
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo> drawer =
-                new TreapDrawer<NodeWithHeightAndSize, HeightAndSizeInfo>(treap, panel1.CreateGraphics(), panel1.Size.Width, panel1.Size.Height);
             drawer.Draw();
+        }
+
+        private void panel1_MouseClick(object sender, MouseEventArgs e)
+        {
+            richTextBox1.Text = drawer.GetDetailInfo(e.Location);
         }
     }
 }

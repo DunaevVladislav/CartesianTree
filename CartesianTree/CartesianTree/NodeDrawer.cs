@@ -60,5 +60,24 @@ namespace CartesianTree
             return new Rectangle((EndX + StartX - Size) / 2, StartY, Size, Size);
         }
 
+        /// <summary>
+        /// Проверяет принадлежит ли точка прямоугольнику
+        /// </summary>
+        /// <param name="x">Координата x точки</param>
+        /// <param name="y">Координата y точки </param>
+        /// <returns>Приндлежит ли точка прямоугольнику</returns>
+        public bool Inside(int x, int y)
+        {
+            int leftX = (EndX + StartX - Size) / 2;
+            return leftX <= x && x <= leftX + size && StartY <= y && y <= StartY + size;
+        }
+
+        /// <summary>
+        /// Проверяет принадлежит ли точка прямоугольнику
+        /// </summary>
+        /// <param name="point">Проверяемая точка</param>
+        /// <returns>Приндлежит ли точка прямоугольнику</returns>
+        public bool Inside(Point point) => Inside(point.X, point.Y);
+
     }
 }

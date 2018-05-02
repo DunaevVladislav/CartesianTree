@@ -6,7 +6,8 @@ namespace CartesianTree
     /// Класс, реализующий хранение информации в дереве и ее обновление
     /// </summary>
     /// <typeparam name="TValue">Информация, которая хранится в узле дерева</typeparam>
-    class NodeInfo<TValue> : IComparable where TValue : IComparable
+    class NodeInfo<TValue> : IComparable, IDetailsToString
+        where TValue : IComparable
     {
         /// <summary>
         /// Значение узла
@@ -95,10 +96,12 @@ namespace CartesianTree
         /// <summary>
         /// Возвращает строку, представляющую текущий объект 
         /// </summary>
+        /// <param name="details">Нужна ли подробная информация</param>
         /// <returns>Строку, представляющую текущий объект </returns>
-        public override string ToString()
+        public string ToString(bool details = false)
         {
-            return Value.ToString();
+            return (details?"Информация хранящайся в узле:\n":"") + 
+                (Value is IDetailsToString?(Value as IDetailsToString).ToString(details):Value.ToString());
         }
     }
 }
