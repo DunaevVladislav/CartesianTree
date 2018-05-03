@@ -140,8 +140,8 @@ namespace CartesianTree
                 {
                     Right.Split(x, out newTree, out right);
                 }
-                left = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, Left, newTree);
-                left.Update();
+                Right = newTree;
+                left = this;
             }
             else
             {
@@ -153,9 +153,10 @@ namespace CartesianTree
                 {
                     Left.Split(x, out left, out newTree);
                 }
-                right = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, newTree, Right);
-                right.Update();
+                Left = newTree;
+                right = this;
             }
+            Update();
         }
 
         /// <summary>
@@ -177,8 +178,8 @@ namespace CartesianTree
                 {
                     Right.SplitLeft(x, out newTree, out right);
                 }
-                left = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, Left, newTree);
-                left.Update();
+                Right = newTree;
+                left = this;
             }
             else
             {
@@ -190,9 +191,10 @@ namespace CartesianTree
                 {
                     Left.SplitLeft(x, out left, out newTree);
                 }
-                right = new NodeOfCartesianTree<TNode, TValue>(Info, Priority, newTree, Right);
-                right.Update();
+                Left = newTree;
+                right = this;
             }
+            Update();
         }
 
         /// <summary>
