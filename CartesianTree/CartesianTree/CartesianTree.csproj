@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ArrowDrawer.cs" />
     <Compile Include="IDetailsToString.cs" />
+    <Compile Include="LogTreap.cs" />
     <Compile Include="NodeDrawer.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

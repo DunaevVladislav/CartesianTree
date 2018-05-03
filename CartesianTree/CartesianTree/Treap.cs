@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CartesianTree
 {
@@ -12,13 +13,28 @@ namespace CartesianTree
         /// <summary>
         /// Корень дерева
         /// </summary>
-        public NodeOfCartesianTree<TNode, TValue> Root { get; private set; }
+        public NodeOfCartesianTree<TNode, TValue> Root { get; private set; } = null;
+
+        public List<LogTreap<TNode, TValue>> Logs { get; private set; } = null;
+
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="enableLogging">Ведение логов</param>
+        public Treap(bool enableLogging = false)
+        {
+            if (enableLogging)
+            {
+                Logs = new List<LogTreap<TNode, TValue>>();
+            }
+        }
 
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="value">Информация, которая хранится в корне</param>
-        public Treap(TValue value)
+        /// <param name="enableLogging">Ведение логов</param>
+        public Treap(TValue value, bool enableLogging = false):this(enableLogging)
         {
             Root = new NodeOfCartesianTree<TNode, TValue>(value);
         }
@@ -27,7 +43,8 @@ namespace CartesianTree
         /// Конструктор
         /// </summary>
         /// <param name="rootInfo">Информация, которая хранится в корне</param>
-        public Treap(TNode rootInfo)
+        /// <param name="enableLogging">Ведение логов</param>
+        public Treap(TNode rootInfo, bool enableLogging = false) : this(enableLogging)
         {
             Root = new NodeOfCartesianTree<TNode, TValue>(rootInfo);
         }
@@ -36,7 +53,8 @@ namespace CartesianTree
         /// Конструктор
         /// </summary>
         /// <param name="rootNode">Корень дерева</param>
-        public Treap(NodeOfCartesianTree<TNode, TValue> rootNode = null)
+        /// <param name="enableLogging">Ведение логов</param>
+        public Treap(NodeOfCartesianTree<TNode, TValue> rootNode, bool enableLogging = false) : this(enableLogging)
         {
             Root = rootNode;
         }
@@ -48,7 +66,7 @@ namespace CartesianTree
         /// <param name="subTree">Поддерево, с которым происходит слияние</param>
         public void Merge(Treap<TNode, TValue> subTree)
         {
-            Root = NodeOfCartesianTree<TNode, TValue>.Merge(Root, subTree.Root);
+            Root = NodeOfCartesianTree<TNode, TValue>.Merge(Root, subTree.Root, Logs);
         }
 
         /// <summary>
@@ -62,7 +80,7 @@ namespace CartesianTree
         public void Split<T>(T x, out Treap<TNode, TValue> left, out Treap<TNode, TValue> right)
         {
             NodeOfCartesianTree<TNode, TValue> l, r;
-            Root.Split(x, out l, out r);
+            Root.Split(x, out l, out r, Logs);
             left = new Treap<TNode, TValue>(l);
             right = new Treap<TNode, TValue>(r);
         }
@@ -78,7 +96,7 @@ namespace CartesianTree
         public void SplitLeft<T>(T x, out Treap<TNode, TValue> left, out Treap<TNode, TValue> right)
         {
             NodeOfCartesianTree<TNode, TValue> l, r;
-            Root.SplitLeft(x, out l, out r);
+            Root.SplitLeft(x, out l, out r, Logs);
             left = new Treap<TNode, TValue>(l);
             right = new Treap<TNode, TValue>(r);
         }
@@ -93,7 +111,7 @@ namespace CartesianTree
         public Treap<TNode, TValue> Split<T>(T x)
         {
             NodeOfCartesianTree<TNode, TValue> l = null, r = null;
-            Root?.Split(x, out l, out r);
+            Root?.Split(x, out l, out r, Logs);
             Root = l;
             return new Treap<TNode, TValue>(r);
         }
@@ -108,7 +126,7 @@ namespace CartesianTree
         public Treap<TNode, TValue> SplitLeft<T>(T x)
         {
             NodeOfCartesianTree<TNode, TValue> l, r;
-            Root.SplitLeft(x, out l, out r);
+            Root.SplitLeft(x, out l, out r, Logs);
             Root = l;
             return new Treap<TNode, TValue>(r);
         }

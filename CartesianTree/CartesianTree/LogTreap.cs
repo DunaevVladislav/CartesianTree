@@ -27,6 +27,14 @@ namespace CartesianTree
         /// Удаление узла
         /// </summary>
         RemoveNode,
+        /// <summary>
+        /// Слияние деревеьев
+        /// </summary>
+        Merging,
+        /// <summary>
+        /// Раздление дерева
+        /// </summary>
+        Splitting,
     }
 
     /// <summary>
