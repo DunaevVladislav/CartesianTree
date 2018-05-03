@@ -61,6 +61,17 @@ namespace CartesianTree
         }
 
         /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="rect1">Прямоугольник от которого рисуется стрелка</param>
+        /// <param name="rect2">Прямоугольник к которому рисуется стрелка</param>
+        public ArrowDrawer(Rectangle rect1, Rectangle rect2)
+        {
+            Start = new Point((rect1.Right + rect1.Left) / 2, rect1.Bottom + 2);
+            End = new Point((rect2.Right + rect2.Left) / 2, rect2.Top - 2);
+        }
+
+        /// <summary>
         /// Рисует стрелку
         /// </summary>
         /// <param name="graphics">Объект Graphics, где будет отрисована стрелка</param>

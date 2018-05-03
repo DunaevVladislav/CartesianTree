@@ -20,6 +20,36 @@ namespace CartesianTree
         private int size = 60;
 
         /// <summary>
+        /// Цвет границ узлов
+        /// </summary>
+        public Pen PenBorder { get; set; } = new Pen(Color.Black, 2);
+
+        /// <summary>
+        /// Шрифт для отображения информации внутри узла
+        /// </summary>
+        public Font Font { get; set; } = new Font("Calibri", 9);
+
+        /// <summary>
+        /// Цвет шрифта
+        /// </summary>
+        public Brush BrushFont { get; set; } = new SolidBrush(Color.Black);
+
+        /// <summary>
+        /// Прямоугольник, который представляет узел
+        /// </summary>
+        public Rectangle Rect => new Rectangle((EndX + StartX - Size) / 2, StartY, Size, Size);
+
+        /// <summary>
+        /// Минимальный размер при котором происходит отбражение текста
+        /// </summary>
+        public int MinSizeForOutText { get; set; } = 45;
+
+        /// <summary>
+        /// Стрелка которая входит в узел
+        /// </summary>
+        public ArrowDrawer Arrow { get; set; }
+
+        /// <summary>
         /// Размер узла дерева
         /// </summary>
         public int Size
@@ -57,7 +87,7 @@ namespace CartesianTree
         /// <returns>Rectangle, который предстваляет узел дерева</returns>
         public Rectangle GetRectangle()
         {
-            return new Rectangle((EndX + StartX - Size) / 2, StartY, Size, Size);
+            return Rect;
         }
 
         /// <summary>
@@ -78,6 +108,21 @@ namespace CartesianTree
         /// <param name="point">Проверяемая точка</param>
         /// <returns>Приндлежит ли точка прямоугольнику</returns>
         public bool Inside(Point point) => Inside(point.X, point.Y);
+
+        /// <summary>
+        /// Рисует узел дерева на graphics
+        /// </summary>
+        /// <param name="graphics">Объект, где рисует узел дерева</param>
+        public void Draw(Graphics graphics)
+        {
+            graphics.DrawRectangle(PenBorder, Rect);
+            if (Size >= MinSizeForOutText)
+            {
+                graphics.DrawString(Text, Font, BrushFont, (StartX + EndX - Size) / 2, StartY);
+            }
+            Arrow?.Draw(graphics);
+        }
+
 
     }
 }

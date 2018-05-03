@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace CartesianTree
 {
     /// <summary>
     /// Класс для рисования декартового дерева
     /// </summary>
+    /// <typeparam name="TNode">Информация хранящайся в узле дерева</typeparam>
+    /// <typeparam name="TValue">Тип данных который хранится в декартовом дереве</typeparam>
     class TreapDrawer<TNode, TValue>
-        where TValue : IComparable,IDetailsToString
+        where TValue : IComparable, IDetailsToString
         where TNode : NodeInfo<TValue>, new()
     {
+
         /// <summary>
         /// Объект Graphics, на котором происходит отрисовка дерева
         /// </summary>
@@ -25,12 +29,6 @@ namespace CartesianTree
         /// Список всех узлов дерева(для отрисовки)
         /// </summary>
         public List<NodeDrawer> NodeDrawers { get; private set; } = new List<NodeDrawer>();
-
-
-        /// <summary>
-        /// Список всех ребер дерева(для отрисовки)
-        /// </summary>
-        public List<ArrowDrawer> ArrowDrawers { get; private set; } = new List<ArrowDrawer>();
 
         /// <summary>
         /// Список всех узлов дерева
@@ -108,7 +106,7 @@ namespace CartesianTree
             if (!Treap.IsEmpty())
             {
                 Nodes.Add(Treap.Root);
-                NodeDrawers.Add(GetNodeDrawer(Treap.Root, Backslash, 0, MaxWidth, Size));
+                NodeDrawers.Add(GetNodeDrawer(Treap.Root, Backslash, 0, MaxWidth));
             }
             for (int i = 0; i < Nodes.Count; ++i)
             {
@@ -116,24 +114,24 @@ namespace CartesianTree
                 if (Nodes[i].Left != null)
                 {
                     Nodes.Add(Nodes[i].Left);
-                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Left, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight, NodeDrawers[i].StartX, mid, Size));
-                    ArrowDrawers.Add(
+                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Left, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight, NodeDrawers[i].StartX, mid));
+                    NodeDrawers.Last().Arrow =
                         new ArrowDrawer(mid, NodeDrawers[i].StartY + NodeDrawers[i].Size + 2, (NodeDrawers[i].StartX + mid) / 2, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight - 2)
                         {
-                            Pen = PenArrow,
+                            Pen = (Pen)PenArrow.Clone(),
                             LengthPointer = NodeDrawers[i].Size / 3,
-                        });
+                        };
                 }
                 if (Nodes[i].Right != null)
                 {
                     Nodes.Add(Nodes[i].Right);
-                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Right, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight, mid + 1, NodeDrawers[i].EndX, Size));
-                    ArrowDrawers.Add(
+                    NodeDrawers.Add(GetNodeDrawer(Nodes[i].Right, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight, mid + 1, NodeDrawers[i].EndX));
+                    NodeDrawers.Last().Arrow =
                         new ArrowDrawer(mid, NodeDrawers[i].StartY + NodeDrawers[i].Size + 2, (NodeDrawers[i].EndX + mid) / 2, NodeDrawers[i].StartY + NodeDrawers[i].Size + DistanseHeight - 2)
                         {
-                            Pen = PenArrow,
-                            LengthPointer = NodeDrawers[i].Size /3,
-                        });
+                            Pen = (Pen)PenArrow.Clone(),
+                            LengthPointer = NodeDrawers[i].Size / 3,
+                        };
                 }
             }
         }
@@ -147,16 +145,7 @@ namespace CartesianTree
             foreach (NodeDrawer node in NodeDrawers)
             {
                 if (node.StartY + node.Size > MaxHeight) continue;
-                Graphics.DrawRectangle(PenBorder, node.GetRectangle());
-                if (node.Size == Size)
-                {
-                    Graphics.DrawString(node.Text, Font, BrushFont, (node.StartX + node.EndX - Size) / 2, node.StartY);
-                }
-            }
-            foreach (ArrowDrawer arrow in ArrowDrawers)
-            {
-                if (arrow.End.Y > MaxHeight) continue;
-                arrow.Draw(Graphics);
+                node.Draw(Graphics);
             }
         }
 
@@ -168,7 +157,7 @@ namespace CartesianTree
         /// <param name="startX">Начало области рисования узла</param>
         /// <param name="endX">Конец области рисования узла</param>
         /// <returns></returns>
-        private static NodeDrawer GetNodeDrawer(NodeOfCartesianTree<TNode, TValue> node, int startY, int startX, int endX, int size)
+        private NodeDrawer GetNodeDrawer(NodeOfCartesianTree<TNode, TValue> node, int startY, int startX, int endX)
         {
             NodeDrawer nodeDrawer = new NodeDrawer()
             {
@@ -176,7 +165,11 @@ namespace CartesianTree
                 StartX = startX,
                 EndX = endX,
                 Text = node.ToString(),
-                Size = size,
+                Size = Size,
+                PenBorder = (Pen)PenBorder.Clone(),
+                BrushFont = (Brush)BrushFont.Clone(),
+                MinSizeForOutText = Size,
+                Font = Font
             };
             return nodeDrawer;
         }
@@ -189,7 +182,7 @@ namespace CartesianTree
         /// <returns>Подробную информацию об узле(если такой найдется)</returns>
         public string GetDetailInfo(Point point)
         {
-            for(int i = 0; i < NodeDrawers.Count; ++i)
+            for (int i = 0; i < NodeDrawers.Count; ++i)
             {
                 if (NodeDrawers[i].Inside(point))
                 {
@@ -198,6 +191,140 @@ namespace CartesianTree
             }
             return "";
         }
+
+        /// <summary>
+        /// Измения декартового дерева
+        /// </summary>
+        public List<LogTreap<TNode, TValue>> Logs { get; set; }
+
+        /// <summary>
+        /// Индекс последнего просмотренного действия в логах
+        /// </summary>
+        private int indexLogs = 0;
+
+        /// <summary>
+        /// Очищает лог изменений
+        /// </summary>
+        public void ResetLogs()
+        {
+            Logs.Clear();
+            indexLogs = 0;
+        }
+
+        /// <summary>
+        /// Ищет объект NodeDrawer по узлу Декартового дерева
+        /// </summary>
+        /// <param name="node">Узел Декартового дерева</param>
+        /// <returns>Найденный NodeDrawer</returns>
+        public NodeDrawer FindNodeDrawer(NodeOfCartesianTree<TNode, TValue> node)
+        {
+            for (int i = 0; i < Nodes.Count; ++i)
+            {
+                if (Nodes[i] == node) return NodeDrawers[i];
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Очередь узлов, которые ждут заверешения рекурсивного вызова
+        /// </summary>
+        private Queue<NodeDrawer> prevActive = new Queue<NodeDrawer>();
+
+        /// <summary>
+        /// Цвет узлов, которые ждут заверешения рекурсивного вызова
+        /// </summary>
+        private Color waitColor = Color.Blue;
+
+        /// <summary>
+        /// Цвет узлов, которые активны в данный момент
+        /// </summary>
+        private Color activeColor = Color.Red;
+
+        /// <summary>
+        /// Очищает очередь prevActive
+        /// Красит все узлы в очереди в цвет waitColor
+        /// </summary>
+        private void ClearActive()
+        {
+            while (prevActive.Count > 0)
+            {
+                prevActive.Dequeue().PenBorder.Color = waitColor;
+            }
+        }
+
+        /// <summary>
+        /// Отрисовывает следующее изменение
+        /// </summary>
+        public void NextEventInLog()
+        {
+            if (indexLogs >= Logs.Count) return;
+            else
+            {
+                switch (Logs[indexLogs].LogEvent)
+                {
+                    case LogTreapEvent.StartSplite:
+                        {
+                            ClearActive();
+                            NodeDrawer nodeDrawer = FindNodeDrawer(Logs[indexLogs].Nodes[0]);
+                            nodeDrawer.PenBorder.Color = activeColor;
+                            prevActive.Enqueue(nodeDrawer);
+                            break;
+                        }
+
+                    case LogTreapEvent.EndSplite:
+                        {
+                            prevActive.Clear();
+                            NodeDrawer nodeDrawer = FindNodeDrawer(Logs[indexLogs].Nodes[0]);
+                            nodeDrawer.PenBorder.Color = PenBorder.Color;
+                            break;
+                        }
+                    case LogTreapEvent.RemoveEdge:
+                        {
+                            NodeDrawer nodeDrawer = FindNodeDrawer(Logs[indexLogs].Nodes[0]);
+                            nodeDrawer.Arrow = null;
+                            break;
+                        }
+
+                    case LogTreapEvent.AddedEdge:
+                        {
+                            NodeDrawer nodeFrom = FindNodeDrawer(Logs[indexLogs].Nodes[0]);
+                            NodeDrawer nodeTo = FindNodeDrawer(Logs[indexLogs].Nodes[1]);
+                            nodeFrom.PenBorder.Color = activeColor;
+                            nodeTo.Arrow = new ArrowDrawer(nodeFrom.Rect, nodeTo.Rect)
+                            {
+                                Pen = (Pen)PenArrow.Clone(),
+                                LengthPointer = nodeTo.Size / 3,
+                            };
+                            break;
+                        }
+
+                    case LogTreapEvent.StartMerge:
+                        {
+                            ClearActive();
+                            NodeDrawer nodeLeft = FindNodeDrawer(Logs[indexLogs].Nodes[0]);
+                            NodeDrawer nodeRight = FindNodeDrawer(Logs[indexLogs].Nodes[1]);
+                            nodeLeft.PenBorder.Color = activeColor;
+                            nodeRight.PenBorder.Color = activeColor;
+                            prevActive.Enqueue(nodeLeft);
+                            prevActive.Enqueue(nodeRight);
+                            break;
+                        }
+                    case LogTreapEvent.EndMerge:
+                        {
+                            prevActive.Clear();
+                            NodeDrawer nodeLeft = FindNodeDrawer(Logs[indexLogs].Nodes[0]);
+                            NodeDrawer nodeRight = FindNodeDrawer(Logs[indexLogs].Nodes[1]);
+                            nodeLeft.PenBorder.Color = PenBorder.Color;
+                            nodeRight.PenBorder.Color = PenBorder.Color;
+                            break;
+                        }
+
+                }
+                Draw();
+                indexLogs++;
+            }
+        }
+
 
 
     }

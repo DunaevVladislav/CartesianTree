@@ -111,25 +111,33 @@ namespace CartesianTree
             NodeOfCartesianTree<TNode, TValue> left, NodeOfCartesianTree<TNode, TValue> right, List<LogTreap<TNode, TValue>> logs
             )
         {
-            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.Merging, left, right));
             if (left == null) return right;
             if (right == null) return left;
+            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.StartMerge, left, right));
             if (left.Priority > right.Priority)
             {
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, left, left.Right));
+                if (left.Right != null)
+                {
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, left.Right));
+                }
                 var newRight = Merge(left.Right, right, logs);
                 logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, left, newRight));
                 left.Right = newRight;
                 left.Update();
+                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.EndMerge, left, right));
                 return left;
             }
             else
             {
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, right, right.Left));
+                if (right.Left != null)
+                {
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, right.Left));
+                }
                 var newLeft = Merge(left, right.Left, logs);
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, right, newLeft));
+                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, right, newLeft));
                 right.Left = newLeft;
                 right.Update();
+                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.EndMerge, left, right));
                 return right;
             }
         }
@@ -144,7 +152,7 @@ namespace CartesianTree
         public void Split<T>(T x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right, List<LogTreap<TNode, TValue>> logs)
         {
             NodeOfCartesianTree<TNode, TValue> newTree = null;
-            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.Splitting, this));
+            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.StartSplite, this));
             if (Info.Value.CompareTo(x) <= 0)
             {
                 if (Right == null)
@@ -153,10 +161,13 @@ namespace CartesianTree
                 }
                 else
                 {
-                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, this, Right));
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, Right));
                     Right.Split(x, out newTree, out right, logs);
                 }
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                if (newTree != null)
+                {
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                }
                 Right = newTree;
                 left = this;
             }
@@ -168,14 +179,18 @@ namespace CartesianTree
                 }
                 else
                 {
-                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, this, Left));
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, Left));
                     Left.Split(x, out left, out newTree, logs);
                 }
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                if (newTree != null)
+                {
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                }
                 Left = newTree;
                 right = this;
             }
             Update();
+            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.EndSplite, this));
         }
 
         /// <summary>
@@ -188,7 +203,7 @@ namespace CartesianTree
         public void SplitLeft<T>(T x, out NodeOfCartesianTree<TNode, TValue> left, out NodeOfCartesianTree<TNode, TValue> right, List<LogTreap<TNode, TValue>> logs)
         {
             NodeOfCartesianTree<TNode, TValue> newTree = null;
-            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.Splitting, this));
+            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.StartSplite, this));
             if (Info.Value.CompareTo(x) < 0)
             {
                 if (Right == null)
@@ -197,10 +212,13 @@ namespace CartesianTree
                 }
                 else
                 {
-                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, this, Right));
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge,  Right));
                     Right.SplitLeft(x, out newTree, out right, logs);
                 }
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                if (newTree != null)
+                {
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                }
                 Right = newTree;
                 left = this;
             }
@@ -212,14 +230,18 @@ namespace CartesianTree
                 }
                 else
                 {
-                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, this, Left));
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.RemoveEdge, Left));
                     Left.SplitLeft(x, out left, out newTree, logs);
                 }
-                logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                if (newTree != null)
+                {
+                    logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.AddedEdge, this, newTree));
+                }
                 Left = newTree;
                 right = this;
             }
             Update();
+            logs?.Add(new LogTreap<TNode, TValue>(LogTreapEvent.EndSplite, this));
         }
 
         /// <summary>

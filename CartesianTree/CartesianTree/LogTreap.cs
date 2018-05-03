@@ -28,13 +28,21 @@ namespace CartesianTree
         /// </summary>
         RemoveNode,
         /// <summary>
-        /// Слияние деревеьев
+        /// Старт слияния деревеьев
         /// </summary>
-        Merging,
+        StartMerge,
         /// <summary>
-        /// Раздление дерева
+        /// Старт разделения дерева
         /// </summary>
-        Splitting,
+        StartSplite,
+        /// <summary>
+        /// Конец слияния деревеьев
+        /// </summary>
+        EndMerge,
+        /// <summary>
+        /// Конец разделения дерева
+        /// </summary>
+        EndSplite,
     }
 
     /// <summary>
