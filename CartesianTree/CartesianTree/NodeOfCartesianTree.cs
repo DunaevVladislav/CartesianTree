@@ -30,7 +30,7 @@ namespace CartesianTree
         /// <summary>
         /// Минимальный приоритет узла
         /// </summary>
-        public static int MinPriority { get; set; } = int.MinValue;
+        public static int MinPriority { get; set; } = 0;
 
         /// <summary>
         /// Максимальный приоритет узла

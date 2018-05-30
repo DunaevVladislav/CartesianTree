@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -67,6 +68,49 @@ namespace CartesianTree
 
         private void button1_Click(object sender, EventArgs e)
         {
+            int sz = 100000;
+            int[] vals = new int[sz];
+            Random rnd = new Random();
+            for(int i = 0; i < sz; ++i)
+            {
+                vals[i] = rnd.Next() % (10 * sz);
+            }
+
+            FastTreap test = null;
+            SortedSet<int> test2 = new SortedSet<int>();
+            Stopwatch stopWatch = new Stopwatch();
+
+            for (int i = 0; i < sz; i++)
+            {
+                FastTreap.Add(ref test, vals[i]);
+            }
+            for (int i = 0; i < sz; i++)
+            {
+                test2.Add(vals[i]);
+            }
+
+
+
+            stopWatch.Start();
+            for (int i = 0; i < sz; i++)
+            {
+                test2.Remove(vals[i]);
+            }
+            stopWatch.Stop();
+            long tm2 = stopWatch.ElapsedTicks;
+
+            stopWatch.Restart();
+            for (int i = 0; i < sz; i++)
+            {
+                FastTreap.Remove(ref test, vals[i]);
+            }
+            stopWatch.Stop();
+
+            long tm1 = stopWatch.ElapsedTicks;
+
+
+
+
             right = treap.Split(Convert.ToInt32(numericUpDown1.Value));
             button1.Enabled = false;
             button3.Enabled = true;
