@@ -68,49 +68,6 @@ namespace CartesianTree
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int sz = 100000;
-            int[] vals = new int[sz];
-            Random rnd = new Random();
-            for(int i = 0; i < sz; ++i)
-            {
-                vals[i] = rnd.Next() % (10 * sz);
-            }
-
-            FastTreap test = null;
-            SortedSet<int> test2 = new SortedSet<int>();
-            Stopwatch stopWatch = new Stopwatch();
-
-            for (int i = 0; i < sz; i++)
-            {
-                FastTreap.Add(ref test, vals[i]);
-            }
-            for (int i = 0; i < sz; i++)
-            {
-                test2.Add(vals[i]);
-            }
-
-
-
-            stopWatch.Start();
-            for (int i = 0; i < sz; i++)
-            {
-                test2.Remove(vals[i]);
-            }
-            stopWatch.Stop();
-            long tm2 = stopWatch.ElapsedTicks;
-
-            stopWatch.Restart();
-            for (int i = 0; i < sz; i++)
-            {
-                FastTreap.Remove(ref test, vals[i]);
-            }
-            stopWatch.Stop();
-
-            long tm1 = stopWatch.ElapsedTicks;
-
-
-
-
             right = treap.Split(Convert.ToInt32(numericUpDown1.Value));
             button1.Enabled = false;
             button3.Enabled = true;
@@ -126,6 +83,111 @@ namespace CartesianTree
             treap.Merge(right);
             button1.Enabled = true;
             button3.Enabled = false;
+        }
+
+        private void TestRebBlackTree(int[] vals)
+        {
+            if (dataGridView1.Rows.Count < 1)
+            {
+                dataGridView1.Rows.Add();
+            }
+            else
+            {
+                dataGridView1.Rows[0].Cells[0].Value = "";
+                dataGridView1.Rows[0].Cells[1].Value = "";
+                dataGridView1.Rows[0].Cells[2].Value = "";
+                dataGridView1.Rows[0].Cells[3].Value = "";
+            }
+
+            dataGridView1.Rows[0].Cells[0].Value = "Красно-черное дерево";
+
+            Stopwatch stopWatch = new Stopwatch();
+            SortedSet<int> test = new SortedSet<int>();
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                test.Add(vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[0].Cells[1].Value = stopWatch.ElapsedTicks.ToString();
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                test.Contains(vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[0].Cells[2].Value = stopWatch.ElapsedTicks.ToString();
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                test.Remove(vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[0].Cells[3].Value = stopWatch.ElapsedTicks.ToString();
+        }
+
+        private void TestCartesianTree(int[] vals)
+        {
+            if (dataGridView1.Rows.Count < 2)
+            {
+                dataGridView1.Rows.Add();
+            }
+            else
+            {
+                dataGridView1.Rows[1].Cells[0].Value = "";
+                dataGridView1.Rows[1].Cells[1].Value = "";
+                dataGridView1.Rows[1].Cells[2].Value = "";
+                dataGridView1.Rows[1].Cells[3].Value = "";
+            }
+
+            dataGridView1.Rows[1].Cells[0].Value = "Декартовое дерево";
+
+            Stopwatch stopWatch = new Stopwatch();
+            FastTreap test = null;
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                FastTreap.Add(ref test, vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[1].Cells[1].Value = stopWatch.ElapsedTicks.ToString();
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                FastTreap.Contains(test, vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[1].Cells[2].Value = stopWatch.ElapsedTicks.ToString();
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                FastTreap.Remove(ref test, vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[1].Cells[3].Value = stopWatch.ElapsedTicks.ToString();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            int sz = (int)numericUpDown2.Value;
+            int[] vals = new int[sz];
+            Random rnd = new Random();
+            for (int i = 0; i < sz; ++i)
+            {
+                vals[i] = rnd.Next() % (2 * sz);
+            }
+
+            TestRebBlackTree(vals);
+            TestCartesianTree(vals);
+            
+
+
         }
     }
 }
