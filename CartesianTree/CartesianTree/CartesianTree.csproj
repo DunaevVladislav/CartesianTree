@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrowDrawer.cs" />
+    <Compile Include="BinaryTree.cs" />
     <Compile Include="FastTreap.cs" />
     <Compile Include="IDetailsToString.cs" />
     <Compile Include="LogTreap.cs" />

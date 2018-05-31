@@ -173,6 +173,50 @@ namespace CartesianTree
             dataGridView1.Rows[1].Cells[3].Value = stopWatch.ElapsedTicks.ToString();
         }
 
+        private void TestBinaryTree(int[] vals)
+        {
+            if (dataGridView1.Rows.Count < 3)
+            {
+                dataGridView1.Rows.Add();
+            }
+            else
+            {
+                dataGridView1.Rows[2].Cells[0].Value = "";
+                dataGridView1.Rows[2].Cells[1].Value = "";
+                dataGridView1.Rows[2].Cells[2].Value = "";
+                dataGridView1.Rows[2].Cells[3].Value = "";
+            }
+
+            dataGridView1.Rows[2].Cells[0].Value = "Бинарное дерево";
+
+            Stopwatch stopWatch = new Stopwatch();
+            BinaryTree test = null;
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                BinaryTree.Add(ref test, ref vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[2].Cells[1].Value = stopWatch.ElapsedTicks.ToString();
+
+            stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                BinaryTree.Contains(test, vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[2].Cells[2].Value = stopWatch.ElapsedTicks.ToString();
+
+          /*  stopWatch.Restart();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                BinaryTree.Remove(ref test, vals[i]);
+            }
+            stopWatch.Stop();
+            dataGridView1.Rows[1].Cells[3].Value = stopWatch.ElapsedTicks.ToString();*/
+        }
+
         private void button4_Click(object sender, EventArgs e)
         {
             int sz = (int)numericUpDown2.Value;
@@ -185,7 +229,9 @@ namespace CartesianTree
 
             TestRebBlackTree(vals);
             TestCartesianTree(vals);
-            
+            TestBinaryTree(vals);
+
+
 
 
         }
